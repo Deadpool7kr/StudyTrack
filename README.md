@@ -10,7 +10,12 @@ Full-stack project for Silver Oak University BCA Honours – Full Stack Developm
 - REST API
 - CSS
 - Git/GitHub
+  
+## Live Demo
 
+- Frontend: https://studytrack-frontend-yurq.onrender.com/
+- Backend API Health: https://studytrack-fely.onrender.com/api/health
+  
 ## Run locally
 
 ### 1. Backend
@@ -59,5 +64,4 @@ Set `MONGODB_URI` in `server/.env` to a MongoDB Atlas/local MongoDB connection. 
 - Week 11: Frontend-backend integration and deployment
 - Week 12: Final project submission
 
-## Screenshot rule
-Take screenshots from your own running project. Do not use placeholder/fake screenshots in the submitted workbook.
+

@@ -34,12 +34,19 @@ import ProfileSetup from "./pages/ProfileSetup";
 const API_BASE =
   import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-function useApi(resource) {
+function useApi(resource, enabled = true) {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const load = useCallback(async () => {
+    if (!enabled) {
+      setData([]);
+      setError("");
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError("");
 
@@ -49,6 +56,10 @@ function useApi(resource) {
       });
 
       if (!res.ok) {
+        if (res.status === 401) {
+          throw new Error("Authentication required");
+        }
+
         throw new Error("API request failed");
       }
 
@@ -58,7 +69,7 @@ function useApi(resource) {
     } finally {
       setLoading(false);
     }
-  }, [resource]);
+  }, [resource, enabled]);
 
   useEffect(() => {
     load();
@@ -78,8 +89,13 @@ function App() {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
 
-  const tasksApi = useApi("tasks");
-  const notesApi = useApi("notes");
+  // Do not call protected APIs until the session check has completed
+  // and a logged-in user is known. This prevents expected 401 requests
+  // during the initial unauthenticated render.
+  const apiEnabled = !authLoading && !!user;
+
+  const tasksApi = useApi("tasks", apiEnabled);
+  const notesApi = useApi("notes", apiEnabled);
 
   const [tasks, setTasks] = useState([]);
   const [notes, setNotes] = useState([]);

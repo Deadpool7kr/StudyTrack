@@ -113,7 +113,13 @@ router.post('/google', async (req, res) => {
         secure:
           process.env.NODE_ENV ===
           'production',
-        sameSite: 'lax',
+        // Frontend and API are on different origins in production.
+        // Allow the browser to send this HttpOnly session cookie
+        // with credentialed cross-origin API requests.
+        sameSite:
+          process.env.NODE_ENV === 'production'
+            ? 'none'
+            : 'lax',
         maxAge:
           7 * 24 * 60 * 60 * 1000,
         path: '/'
@@ -335,7 +341,10 @@ router.post(
         secure:
           process.env.NODE_ENV ===
           'production',
-        sameSite: 'lax',
+        sameSite:
+          process.env.NODE_ENV === 'production'
+            ? 'none'
+            : 'lax',
         path: '/'
       }
     )
